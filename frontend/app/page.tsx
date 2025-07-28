@@ -16,7 +16,7 @@ export default function HomePage() {
   useEffect(() => {
     const cleanupZip = async () => {
       try {
-        const res = await fetch("http://localhost:8000/cleanup_zip", {
+        const res = await fetch("process.env.NEXT_PUBLIC_API_URL/cleanup_zip", {
           method: "POST",
         });
         const result = await res.json();
