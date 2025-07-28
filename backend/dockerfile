@@ -52,5 +52,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Salin semua source code ke dalam container
 COPY . .
 
+# Buat folder yang dibutuhkan oleh StaticFiles
+RUN mkdir -p /app/render_output
+
 # Jalankan FastAPI dengan uvicorn
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
