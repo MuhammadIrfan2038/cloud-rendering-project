@@ -21,6 +21,8 @@ services:
     build:
       context: ./frontend
     container_name: nextjs-frontend
+    environment:
+      - NEXT_PUBLIC_API_URL=http://44.203.91.195:8000
     ports:
       - "3000:3000"
     # HAPUS VOLUME INI ↓ karena override hasil build
