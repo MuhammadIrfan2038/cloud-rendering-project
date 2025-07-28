@@ -1,16 +1,29 @@
 FROM node:18-alpine
 
+# Set working directory
 WORKDIR /app
 
+# Install dependencies
 COPY package.json package-lock.json* ./
 RUN npm install
 
+# Inject env variable at build time
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+
+# Copy the rest of the code
 COPY . .
 
-# Build dengan standalone output
-RUN npm run build
+# Build with standalone output
+RUN npm run build && \
+    cp -r public .next/standalone/public && \
+    cp -r .next/static .next/standalone/.next/static
 
-RUN cp -r .next/static .next/standalone/.next/static
+# Move to standalone directory
+WORKDIR /app/.next/standalone
 
-# Jalankan server standalone langsung
-CMD ["node", ".next/standalone/server.js"]
+# Expose port
+EXPOSE 3000
+
+# Run the production server
+CMD ["node", "server.js"]
