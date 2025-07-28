@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+    container_name: fastapi-backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./backend:/app
+    restart: unless-stopped
+    networks:
+      - rendernet
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: nextjs-frontend
+    ports:
+      - "3000:3000"
+    # HAPUS VOLUME INI ↓ karena override hasil build
+    # volumes:
+    #   - ./frontend:/app
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - rendernet
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_container
+    restart: always
+    env_file: .env
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      TZ: Asia/Jakarta
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql # opsional
+    networks:
+      - rendernet
+
+volumes:
+  mysql_data:
+
+networks:
+  rendernet:
+    driver: bridge

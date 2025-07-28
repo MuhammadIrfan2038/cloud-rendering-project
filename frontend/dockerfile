@@ -1,0 +1,16 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+COPY package.json package-lock.json* ./
+RUN npm install
+
+COPY . .
+
+# Build dengan standalone output
+RUN npm run build
+
+RUN cp -r .next/static .next/standalone/.next/static
+
+# Jalankan server standalone langsung
+CMD ["node", ".next/standalone/server.js"]
