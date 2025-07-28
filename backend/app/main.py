@@ -28,7 +28,7 @@ app.include_router(render.router)
 # 🌍 CORS Middleware (agar frontend Next.js bisa akses)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # boleh dibatasi ke http://localhost:3000 jika perlu
+    allow_origins=["*"],  # boleh dibatasi ke http://localhost:3000 jika perlu
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
