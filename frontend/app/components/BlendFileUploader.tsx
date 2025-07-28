@@ -45,7 +45,7 @@ export default function BlendFileUploader({ onFileSelected, onUploadFinished, re
     formData.append("file", file);
 
     try {
-      const response = await axios.post("http://localhost:8000/render", formData, {
+      const response = await axios.post("process.env.NEXT_PUBLIC_API_URL/render", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 

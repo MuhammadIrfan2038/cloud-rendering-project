@@ -34,7 +34,7 @@ export default function HomePage() {
 
     const intervalId = setInterval(async () => {
       try {
-        const res = await fetch(`http://localhost:8000/render/progress/${projectName}`);
+        const res = await fetch(`process.env.NEXT_PUBLIC_API_URL/render/progress/${projectName}`);
         if (res.ok) {
           const data = await res.json();
           console.log("[DEBUG] data progress:", data);
@@ -43,7 +43,7 @@ export default function HomePage() {
           setCurrentFrame(data.current_frame);
 
           if (data.status === "done") {
-            setDownloadUrl(`http://localhost:8000/download/${data.project_name}`);
+            setDownloadUrl(`process.env.NEXT_PUBLIC_API_URL/download/${data.project_name}`);
             clearInterval(intervalId);
             setIsRendering(false);
           }
