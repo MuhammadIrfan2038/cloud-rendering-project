@@ -14,9 +14,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 def get_latest_render_progress_by_status(db: Session, status: str):
     return (
-        db.query(RenderProgress)
-        .filter(RenderProgress.status == status)
-        .order_by(RenderProgress.created_at.desc())
+        db.query(RenderMetadata)
+        .filter(RenderMetadata.status == status)
+        .order_by(RenderMetadata.rendered_at.desc())
         .first()
     )
 
