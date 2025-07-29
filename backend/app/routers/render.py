@@ -2,7 +2,7 @@ from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
 from fastapi.responses import FileResponse
 from pathlib import Path
 from dotenv import load_dotenv
-from app.services.blender import render_blend_file_with_settings, initialize_render_progress
+from app.services.blender import render_blend_file_with_settings, initialize_render_progress, get_latest_render_progress_by_status
 from sqlalchemy.orm import Session
 from app.database import SessionLocal
 from app.models import RenderMetadata, RenderProgress
@@ -30,6 +30,17 @@ async def upload_and_render(file: UploadFile = File(...)):
     if not file.filename.endswith(".blend"):
         raise HTTPException(status_code=400, detail="File must be a .blend file")
 
+    db = SessionLocal()
+
+    # Cek apakah sedang ada render aktif
+    existing = get_latest_render_progress_by_status(db, status="rendering")
+    if existing:
+        db.close()
+        raise HTTPException(
+            status_code=409,
+            detail=f"Render sedang berlangsung untuk project '{existing.project_name}'. Harap tunggu hingga selesai."
+        )
+
     # Simpan file
     Path(UPLOAD_DIR).mkdir(parents=True, exist_ok=True)
     file_path = Path(UPLOAD_DIR) / file.filename
@@ -40,7 +51,6 @@ async def upload_and_render(file: UploadFile = File(...)):
     project_name = f"{Path(file.filename).stem}_{datetime.utcnow().strftime('%Y%m%d%H%M%S')}_{uuid.uuid4().hex[:5]}"
 
     # Inisialisasi progres di database
-    db = SessionLocal()
     initialize_render_progress(db, project_name=project_name, total_frames=0)
     db.close()
 

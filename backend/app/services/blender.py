@@ -12,6 +12,14 @@ import shutil
 # BASE_DIR menunjuk ke folder backend/
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+def get_latest_render_progress_by_status(db: Session, status: str):
+    return (
+        db.query(RenderProgress)
+        .filter(RenderProgress.status == status)
+        .order_by(RenderProgress.created_at.desc())
+        .first()
+    )
+
 def initialize_render_progress(db: Session, project_name: str, total_frames: int):
     progress = RenderProgress(
         project_name=project_name,

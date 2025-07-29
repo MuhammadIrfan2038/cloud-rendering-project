@@ -27,9 +27,6 @@ services:
       - NEXT_PUBLIC_API_URL=http://3.80.101.28:8000
     ports:
       - "3000:3000"
-    # HAPUS VOLUME INI ↓ karena override hasil build
-    # volumes:
-    #   - ./frontend:/app
     depends_on:
       - backend
     restart: unless-stopped
