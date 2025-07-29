@@ -12,13 +12,14 @@ import shutil
 # BASE_DIR menunjuk ke folder backend/
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-def get_latest_render_progress_by_status(db: Session, status: str):
-    return (
-        db.query(RenderMetadata)
-        .filter(RenderMetadata.status == status)
-        .order_by(RenderMetadata.rendered_at.desc())
-        .first()
-    )
+def get_active_render(db: Session):
+    return db.query(RenderProgress).filter(RenderProgress.status == "in_progress").first()
+
+def update_render_status(db: Session, project_name: str, status: str):
+    progress = db.query(RenderProgress).filter_by(project_name=project_name).first()
+    if progress:
+        progress.status = status
+        db.commit()
 
 def initialize_render_progress(db: Session, project_name: str, total_frames: int):
     progress = RenderProgress(
@@ -55,6 +56,8 @@ def render_blend_file_with_settings(blend_file_path: str, project_name: str):
 
     # Setup koneksi DB
     db = SessionLocal()
+
+    update_render_status(db, project_name, "is_rendering")
 
     # Jalankan Blender dengan subprocess
     process = subprocess.Popen(

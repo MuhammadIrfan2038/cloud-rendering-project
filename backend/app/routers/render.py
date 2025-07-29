@@ -2,7 +2,7 @@ from fastapi import APIRouter, UploadFile, File, HTTPException, Depends
 from fastapi.responses import FileResponse
 from pathlib import Path
 from dotenv import load_dotenv
-from app.services.blender import render_blend_file_with_settings, initialize_render_progress, get_latest_render_progress_by_status
+from app.services.blender import render_blend_file_with_settings, initialize_render_progress, get_active_render
 from sqlalchemy.orm import Session
 from app.database import SessionLocal
 from app.models import RenderMetadata, RenderProgress
@@ -33,7 +33,7 @@ async def upload_and_render(file: UploadFile = File(...)):
     db = SessionLocal()
 
     # Cek apakah sedang ada render aktif
-    existing = get_latest_render_progress_by_status(db, status="in_progress")
+    existing = get_active_render(db)
     if existing:
         db.close()
         raise HTTPException(
