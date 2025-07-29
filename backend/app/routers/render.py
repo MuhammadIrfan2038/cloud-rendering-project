@@ -33,7 +33,7 @@ async def upload_and_render(file: UploadFile = File(...)):
     db = SessionLocal()
 
     # Cek apakah sedang ada render aktif
-    existing = get_latest_render_progress_by_status(db, status="rendering")
+    existing = get_latest_render_progress_by_status(db, status="in_progress")
     if existing:
         db.close()
         raise HTTPException(
