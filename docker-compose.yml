@@ -21,10 +21,10 @@ services:
     build:
       context: ./frontend
       args:
-        - NEXT_PUBLIC_API_URL=http://54.242.93.87:8000
+        - NEXT_PUBLIC_API_URL=http://52.207.227.237:8000
     container_name: nextjs-frontend
     environment:
-      - NEXT_PUBLIC_API_URL=http://54.242.93.87:8000
+      - NEXT_PUBLIC_API_URL=http://52.207.227.237:8000
     ports:
       - "3000:3000"
     depends_on:
